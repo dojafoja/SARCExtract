@@ -37,11 +37,11 @@ def bytes_to_string(data, offset=0, charWidth=1, encoding='utf-8'):
     return data[offset:end].decode(encoding)
 
 
-def sarc_extract(data, mode):
+def sarc_extract(sarcpath, data, mode):
     print("Reading SARC....")
     pos = 6
 
-    name, ext = os.path.splitext(sys.argv[1])
+    name, ext = os.path.splitext(sarcpath)
 
     if mode == 1:  # Don't need to check again with normal SARC
         magic1 = data[0:4]
@@ -264,10 +264,10 @@ def process_archive(sarcpath):
 
     if magic == b"Yaz0":
         decompressed = Yaz0Dec(data)
-        sarc_extract(decompressed, 1)
+        sarc_extract(sarcpath, decompressed, 1)
 
     elif magic == b"SARC":
-        sarc_extract(data, 0)
+        sarc_extract(sarcpath, data, 0)
 
     else:
         print("Unknown File Format: First 4 bytes of file must be Yaz0 or SARC")
