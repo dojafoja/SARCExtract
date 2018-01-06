@@ -7,8 +7,9 @@ Uses libyaz0.
 * Stella/AboodXD: Ported to Python 3, added support for little endian SARC files and fixed guessing names.
 * Dojafoja: Allow any number of files to be passed in. Also supports wildcard use (*.xyz) and dropping multiple files onto the script.
 
+THIS SCRIPT REQUIRES PYTHON 3
 
-USAGE: 
+USAGE:
 
 You can pass one or more file paths from the command line and also use wildcards (*.xyz) to specify all files with a given extension. These can be used simultaneously from any source location. Providing just a filename without a path prefix will default to the directory from which this program was run.
 
