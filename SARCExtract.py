@@ -1,5 +1,12 @@
 #
-# Made by NWPlayer123 and MasterVermilli0n/AboodXD, no rights reserved, feel free to do whatever
+# Made by NWPlayer123 and MasterVermilli0n/AboodXD, no rights reserved, feel free to do whatever.
+#
+# This script was modified by dojafoja to accept multiple archives as arguments. Wildcards are
+# also permitted and you can specify any number of files and wildcards simultaneously from any location.
+#
+# ie: SARCExtract.py file1.szs c:\game1\*.szs f:\game2\*.szs d:\file3.szs
+#
+# You can also drag and drop any number of files to this script.
 #
 
 import os
@@ -195,14 +202,62 @@ def sarc_extract(data, mode):
 
 
 def main():
+    args = sys.argv[1:]
+    
+    if len(args) < 1:
+        print("Usage: SARCExtract archive.szs")
+        print("You can specify any number of archives")
+        print("as well as using wildcards in any order")
+        print("ie: SARCExtract {} {} {}".format(os.path.join("c:","game1","file1.szs"),os.path.join("e:","haxx","*.szs"),os.path.join("c:","game2","file2.szs")))
+        
+        sys.exit(1)
+
+    # Check for any wildcards
+    for i in args[:]:
+        splitpath = os.path.split(i)
+        if splitpath[1].startswith('*.'):         
+            # Individual filenames were not automatically provided in
+            # sysargv so we will gather them manually instead.
+            wilds = wildcard_gather(splitpath)
+            for x in wilds:
+                args.append(x)
+                
+            args.remove(i)
+            
+    total = len(args)
+    counter = 0
+    for i in args:
+        counter +=1
+        print("\nNow processing: {}".format(i))
+        print("Archive #: {} of {}".format(counter,total))
+        process_archive(i)
+
+
+def wildcard_gather(splitpath):
+    # Gather all filenames when wildcard extension is used. This
+    # was only used in Windows from my own testing, Linux
+    # automatically passed in individual filenames for me.
+    pth = splitpath[0]
+    if pth == '':
+        pth = os.getcwd()
+    ext = splitpath[1].split('.')[1]
+    
+    match_list = []
+    files_list = os.listdir(pth)
+   
+    for i in files_list:
+        if i.endswith(ext):
+            match_list.append(os.path.join(pth,i))
+            
+    return match_list
+    
+        
+def process_archive(sarcpath):
+    print("This script was modified by dojafoja")
     print("SARCExtract v0.5 by MasterVermilli0n/AboodXD")
     print("Originally by NWPlayer123")
 
-    if len(sys.argv) != 2:
-        print("Usage: SARCExtract archive.szs")
-        sys.exit(1)
-
-    with open(sys.argv[1], "rb") as f:
+    with open(sarcpath, "rb") as f:
         data = f.read()
 
     magic = data[0:4]
@@ -217,6 +272,7 @@ def main():
     else:
         print("Unknown File Format: First 4 bytes of file must be Yaz0 or SARC")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
